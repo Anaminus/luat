@@ -19,7 +19,7 @@ some way.
 
 For a complete, unambiguous syntax, see the [EBNF](#ebnf) section.
 
-## Luat Syntax
+## Luat Location
 
 Like most other Lua documentation systems, luat syntax is usually contained
 inside comments in a Lua source file. However, it is designed to be
@@ -94,6 +94,7 @@ A named type does not have to be defined before it is used.
 ### method
 
 	@method <name> ( <arguments> ) <returns>
+	@method <name> ( <arguments> ) ( <returns> )
 
 Used after a @type or @var to indicate a class-like method. Alternatively, the
 name may be dot-separated, which explicitly defines the type or variable it is
@@ -106,7 +107,9 @@ It would be possible to define a method-like struct field using types alone.
 	}
 
 However, this can also be interpreted simply as a readonly function. The
-method tag is used to indicate that a field is, semantically, a method.
+method tag is used to indicate that a field is, semantically, a method. It
+also works on other table-like types, which may not have ways to define
+method-like fields.
 
 ### event
 
@@ -160,13 +163,14 @@ A first-class function.
 	function ( <name> <type>, <etc> )        Arguments, no returns
 	function ( <name> <type>, ... )          Variable arguments, no returns
 	function ( ) <name> <type>, <etc>        No arguments, returns
+	function ( ) ( <name> <type>, <etc> )    No arguments, returns with parentheses
 	function ( ) <name> <type>, ...          No arguments, variable returns
 
 ### struct
 
 A Lua table that contains a specific number of named fields of specific types.
 If a field name is prefixed with `~`, then the field is readonly. This
-suggests that a field is set only by internal means.
+suggests that a field is to be set only by internal means.
 
 	{<fieldName> <fieldType>, <etc>}                    Single line
 	struct {<fieldName> <fieldType>, <etc>}             Single line with clarity
@@ -196,7 +200,7 @@ A Lua table that contains any number of fields of a single key type and single
 value type.
 
 	[<keyType>]<valueType>
-	~[<keyType>]<valueType>        Contents are readonly
+	~[<keyType>]<valueType>        All fields are readonly
 
 ### tuple
 
@@ -225,7 +229,7 @@ extended fields are appended to existing ones.
 A Lua table that contains any number of fields of a single type.
 
 	[]<type>
-	~[]<type>        Contents are readonly
+	~[]<type>        All fields are readonly
 
 ### Other type syntax
 
@@ -299,7 +303,7 @@ The following EBNF syntax describes the grammar of luat tags.
 	type_number   = "number" ;
 	type_string   = "string" ;
 	type_value    = "*" ;
-	type_function = ["function"] , s , func_args ;
+	type_function = ["function"] , s , func_args , s , func_returns ;
 	type_array    = ["~"] , s , "[]" , s , type ;
 	type_map      = ["~"] , s , "[" , s , type , s , "]" , s , type ;
 
@@ -314,9 +318,11 @@ The following EBNF syntax describes the grammar of luat tags.
 	struct_field     = ["~"] , s , value_pair ;
 
 	event_args   = "(" , s , [value_pair , {s , "," , s , value_pair}] , s , ")" ;
-	func_args    = "(" , s , [func_arg , {s , "," , s , func_arg}] , s , ")" ;
+	func_args    = "(" , s , [func_arg , {s , "," , s , func_arg}] , [s , "..."] , s , ")" ;
 	func_arg     = value_pair , [s , "=" , s , ?lua:exp?] ;
-	func_returns = [value_pair , {s , "," , s , value_pair}] ;
+
+	func_returns = "(" , s , returns , s , ")" | returns ;
+	returns       = [value_pair , {s , "," , s , value_pair}] , [s , "..."] ;
 
 	value_pair = ident , s , type ;
 	ident      = (a | "_") , {a | d | "_"} ;
