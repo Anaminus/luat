@@ -291,8 +291,8 @@ Indicates one type from a given list of specific types.
 		<types>
 	]
 
-`<types>` is a comma-separated list of one or more types. If defined is
-defined on multiple lines, then the commas should be omitted.
+`<types>` is a comma-separated list of one or more types. If defined on
+multiple lines, then the commas should be omitted.
 
 ### Nullable types
 
