@@ -9,12 +9,9 @@ describing value types and how they should be formatted. There's no parser, or
 documentation generator (yet). Any actual type enforcement will have to be
 done by the careful programmer.
 
-## About examples within this file
-
-Examples of syntax within this file are fairly intuitive. Text enclosed
-between `` ` `` indicates a placeholder. The text between them suggests what
-it placeholds. For example, `` `name` `` might suggest a value containing
-letters and digits.
+In the given examples, text enclosed between `` ` `` indicates a placeholder.
+The text between them suggests what it placeholds. For example, `` `name` ``
+might suggest a value containing letters and digits.
 
 For a complete, unambiguous syntax, see the [EBNF](#ebnf) section.
 
