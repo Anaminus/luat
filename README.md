@@ -11,10 +11,10 @@ done by the careful programmer.
 
 ## About examples within this file
 
-Examples of syntax within this file are fairly intuitive. Text enclosed in `<`
-and `>` indicates a placeholder. The text between them suggests what it
-placeholds. For example, `<name>` might suggest a value containing letters and
-digits.
+Examples of syntax within this file are fairly intuitive. Text enclosed
+between `` ` `` indicates a placeholder. The text between them suggests what
+it placeholds. For example, `` `name` `` might suggest a value containing
+letters and digits.
 
 For a complete, unambiguous syntax, see the [EBNF](#ebnf) section.
 
@@ -41,8 +41,8 @@ The following tags are defined:
 
 ### module
 
-	@module <name> <type>
-	@module <name>
+	@module `name` `type`
+	@module `name`
 
 Defines a new module with the given name. The type indicates the type of value
 the module returns.
@@ -58,7 +58,7 @@ single module is invalid.
 
 ### type
 
-	@type <name> <type>
+	@type `name` `type`
 
 Defines a new value type under a given name. This name may be used in place of
 a literal type definition. A named type does not have to be defined before it
@@ -79,7 +79,7 @@ Semantically, this enables values to have the same type.
 
 ### field
 
-	@field <name>
+	@field `name`
 	@field
 
 Used after a struct or tuple @type to define a single field. The named form
@@ -87,8 +87,8 @@ must be used for struct, while the unnamed form is used for tuples.
 
 ### method
 
-	@method <name> ( <arguments> ) <returns>
-	@method <name> ( <arguments> ) ( <returns> )
+	@method `name` ( `arguments` ) `returns`
+	@method `name` ( `arguments` ) ( `returns` )
 
 Used after a @type to indicate a class-like method. Only applicable to table-
 like types. The argument and return definitions are the same as that of
@@ -107,7 +107,7 @@ method-like fields.
 
 ### event
 
-	@event <name> ( <arguments> )
+	@event `name` ( `arguments` )
 
 Used after a @type to indicate a class-like event. Only applicable to table-
 like types. The argument definitions are the same as that of
@@ -119,22 +119,22 @@ event "fires" at some point, calling the function with the defined arguments.
 
 ### arg
 
-	@arg <name>
+	@arg `name`
 
 Used after a @method, @event, or function type, to define a single argument of
 the function. The name corresponds to the name defined in the argument list.
 
 ### return
 
-	@return <name>
+	@return `name`
 
 Used after a @method or function type to define a return value of the
 function. The name corresponds to the name defined in the return list.
 
 ### using
 
-	@using <module>
-	@using <name> <module>
+	@using `module`
+	@using `name` `module`
 
 Indicates that the types in a specified module may be referenced directly,
 rather than through the module name.
@@ -182,18 +182,18 @@ Represented by a `*` symbol, indicating a value of any type.
 
 A first-class function.
 
-	function ( <arguments> ) <returns>
-	function ( <arguments> ) ( <returns> )
+	function ( `arguments` ) `returns`
+	function ( `arguments` ) ( `returns` )
 
-`<arguments>` and `<returns>` are both comma-separated lists of zero or more
-value pairs, which take the form of:
+`` `arguments` `` and `` `returns` `` are both comma-separated lists of zero
+or more value pairs, which take the form of:
 
-	<name> <type>
+	`name` `type`
 
 A default value for the argument may be given, which is indicated by `=`
 followed by a Lua expression.
 
-	<name> <type> = <exp>
+	`name` `type` = `exp`
 
 This implies that the type is nullable. For complex expressions, it may be
 easier to use some placeholder variable, then describe it in the argument's
@@ -202,7 +202,7 @@ definition.
 The last item in either list may indicate a varying amount of values. This is
 indicated by a `...` followed by a type:
 
-	...<type>
+	...`type`
 
 This indicates the value types of the remaining arguments. The type may also
 be omitted, which indicates any type.
@@ -211,28 +211,27 @@ be omitted, which indicates any type.
 
 A Lua table that contains a specific number of named fields of specific types.
 
-	{<fields>}           Single line
-	struct {<fields>}    Single line with clarity
-	struct {             Multi-line
-		<fields>
+	{`fields`}           Single line
+	{                    Multi-line
+		`fields`
 	}
+	`type` {`fields`}    Extended struct
 
-`<fields>` is a comma-separated list of zero or more value pairs, which take
-the form of:
+`` `fields` `` is a comma-separated list of zero or more value pairs, which
+take the form of:
 
-	<name> <type>
+	`name` `type`
 
-This is distinct from tuple fields, which require only a type. If a field name
-is prefixed with `~`, then the field is readonly. This suggests that a field
-is to be set only by internal means.
+If a field name is prefixed with `~`, then the field is readonly. This
+suggests that a field is to be set only by internal means.
 
 If the field list is defined on multiple lines, then the commas should be
-omitted. For structs defined on a single line, the `struct` is optional.
+omitted.
 
 Structs may be extended by defining a struct on an existing struct type. This
-is done by replacing `struct` with the type name:
+is done by prefixing the struct with the type name:
 
-	@type Shape struct {
+	@type Shape {
 		Visible bool
 		Position {X number, Y number}
 	}
@@ -246,58 +245,57 @@ is done by replacing `struct` with the type name:
 A Lua table that contains any number of fields of a single key type and single
 value type. Prefixing with `~` indicates that all fields are readonly.
 
-	[<keyType>]<valueType>
-	~[<keyType>]<valueType>
+	[`keyType`]`valueType`
+	~[`keyType`]`valueType`
 
 ### tuple
 
 A Lua table that contains a specific number of unnamed fields of specific
 types.
 
-	{<fields>}
-	tuple {<fields>}
-	tuple {
-		<fields>
-	}
+	<`fields`>           Single line
+	<                    Multi-line
+		`fields`
+	>
+	`type` <`fields`>    Extended tuple
 
-`<fields>` is a comma-separated list of zero or more types. This is distinct
-from struct fields, which require a name and a type. If a field is prefixed
-with `~`, then the field is readonly. This suggests that a field is to be set
-only by internal means.
+`` `fields` `` is a comma-separated list of zero or more types. If a field is
+prefixed with `~`, then the field is readonly. This suggests that a field is
+to be set only by internal means.
 
 If the field list is defined on multiple lines, then the commas should be
-omitted. For tuples defined on a single line, the `tuple` is optional.
+omitted.
 
 Like structs, tuples may also be extended. However, tuples are ordered, so
 extended fields are appended to existing ones.
 
-	@type Shape tuple {bool, {number, number} }
-	@type Circle Shape {number}
+	@type Shape <bool, <number, number> >
+	@type Circle Shape <number>
 
 ### array
 
 A Lua table that contains any number of fields of a single type. Prefixing
 with `~` indicates that all fields are readonly.
 
-	[]<type>
-	~[]<type>
+	[]`type`
+	~[]`type`
 
 ### Multiple types
 
 Indicates one type from a given list of specific types.
 
-	[<types>]
+	[`types`]
 	[
-		<types>
+		`types`
 	]
 
-`<types>` is a comma-separated list of one or more types. If defined on
+`` `types` `` is a comma-separated list of one or more types. If defined on
 multiple lines, then the commas should be omitted.
 
 ### Nullable types
 
 Prefixing any type with `?` indicates that the value is optional, or rather,
-may be nil. This is pretty much a shortcut for `[<type>,nil]`.
+may be nil. This is pretty much a shortcut for ``[`type`,nil]``.
 
 	?bool    bool or nil
 	?int     integer or nil
@@ -307,7 +305,7 @@ may be nil. This is pretty much a shortcut for `[<type>,nil]`.
 
 Types from other modules may be used as a type:
 
-	<module>::<type>
+	`module`::`type`
 
 See [using](#using) for referencing external types directly.
 
@@ -361,19 +359,19 @@ The following EBNF syntax describes the grammar of luat tags.
 	type_array    = ["~"] , s , "[]" , s , type ;
 	type_map      = ["~"] , s , "[" , s , type , s , "]" , s , type ;
 
-	type_tuple      = tuple_line | tuple_multiline ;
-	tuple_line      = (["tuple"] | type_name) , s , "{" , s , [tuple_field , {s , "," , s , tuple_field}] , s , "}" ;
-	tuple_multiline = ("tuple" | type_name) , s , "{" , w , {tuple_field , w} , "}" ;
+	type_tuple      = [type_name , s] , (tuple_line | tuple_multiline) ;
+	tuple_line      = "<" , s , [tuple_field , {s , "," , s , tuple_field}] , s , ">" ;
+	tuple_multiline = "<" , n , {tuple_field , n} , ">" ;
 	tuple_field     = ["~"] , s , type ;
 
-	type_struct      = struct_line | struct_multiline ;
-	struct_line      = (["struct"] | type_name) , s , "{" , s , [struct_field , {s , "," , s , struct_field}] , s , "}" ;
-	struct_multiline = ("struct" | type_name) , s , "{" , w , {struct_field , w} , "}" ;
+	type_struct      = [type_name , s] , (struct_line | struct_multiline) ;
+	struct_line      = "{" , s , [struct_field , {s , "," , s , struct_field}] , s , "}" ;
+	struct_multiline = "{" , n , {struct_field , n} , "}" ;
 	struct_field     = ["~"] , s , value_pair ;
 
 	type_mult      = mult_line | mult_multiline ;
 	mult_line      = "[" , s , [type , {s , "," , s , type}] , s , "]" ;
-	mult_multiline = "[" , w , {type , w} , "]" ;
+	mult_multiline = "[" , n , {type , n} , "]" ;
 
 	event_args = "(" , s , [value_pair , {s , "," , s , value_pair}] , s , ")" ;
 	func_args  = "(" , s , [func_arg , {s , "," , s , func_arg}] , [s , var_arg] , s , ")" ;
@@ -392,8 +390,8 @@ The following EBNF syntax describes the grammar of luat tags.
 
 	a = ?regexp:[A-Za-z]? ;
 	d = ?regexp:[0-9]? ;
-	w = { s | "\n" | "\r\n" } ;
-	s = { " " | "\t" } ;
+	n = s , ("\n" | "\r\n") , s ;
+	s = {" " | "\t"} ;
 
 Some notes:
 
